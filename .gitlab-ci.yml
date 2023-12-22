@@ -1,0 +1,30 @@
+stages:
+  - dev
+  - prod
+
+
+dev_deploy:
+  stage: dev
+  tags:
+    - autodeploy_dev
+  only:
+    - dev
+  script:
+    - echo "Deploying dev application..."
+    - git -C $DEV_PROJECT_DIR pull
+    - docker-compose -f $DEV_PROJECT_DIR/docker-compose.dev.yml up -d --build
+    - echo "Dev application successfully deployed."
+
+
+prod_deploy:
+  stage: prod
+  tags:
+    - autodeploy_prod
+  when: manual
+  only:
+    - main
+  script:
+    - echo "Deploying application..."
+    - git -C $PROJECT_DIR pull
+    - docker-compose -f $PROJECT_DIR/docker-compose.yml up -d --build
+    - echo "Application successfully deployed."

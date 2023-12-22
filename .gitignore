@@ -1,5 +1,6 @@
 # .env
 .env
+.env.dev
 
 # pipenv
 Pipfile

@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  web:
-    container_name: web
-    build: ./promotion_service
+  dev_web:
+    container_name: dev_web
+    build: promotion_service/promotion_service
     command: >
       sh -c "python manage.py migrate &&
              python manage.py createsuperuser --username root --email user@example.com --no-input &&
@@ -12,52 +12,52 @@ services:
     volumes:
       - ./promotion_service/:/promotion_service/
     ports:
-      - '8000:8000'
+      - '8001:8001'
     env_file:
-      - .env
+      - .env.dev
     depends_on:
-      - db
+      - dev_db
     networks:
-      - prod
+      - dev
 
-  db:
-    container_name: db
+  dev_db:
+    container_name: dev_db
     image: postgres:latest
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - dev_postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - .env.dev
     networks:
-      - prod
+      - dev
 
-  redis:
-    container_name: redis
+  dev_redis:
+    container_name: dev_redis
     image: redis:alpine
     networks:
-      - prod
+      - dev
 
-  celery:
-    container_name: celery
+  dev_celery:
+    container_name: dev_celery
     restart: always
-    build: ./promotion_service
+    build: promotion_service/promotion_service
     command: python -m celery -A promotion_service.celery worker -l info -B
     volumes:
       - ./promotion_service:/promotion_service
     env_file:
       - .env
     depends_on:
-      - db
-      - redis
-      - web
+      - dev_db
+      - dev_redis
+      - dev_web
     networks:
-      - prod
+      - dev
 
 volumes:
-  postgres_data:
-  static:
-  media:
+  dev_postgres_data:
+  dev_static:
+  dev_media:
 
 networks:
-  prod:
+  dev:
     external:
-      name: prod
+      name: dev

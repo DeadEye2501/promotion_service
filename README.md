@@ -27,6 +27,10 @@
 - Итоговым результатом должен быть репозиторий с описанным порядком запуска сервиса в README
 
 # Порядок запуска
-- Запустите контейнеры с помощью команды `docker-compose up -d --build`
+- Для начала создайте подсети для работы окружений `docker network create dev` и `docker network create prod`
+- Создайте файлы `.env` и `.env.dev` и запишите туда все наобходимые переменные окружения.
+- Запустите контейнеры продакшн среды с помощью команды `docker-compose -f docker-compose.yml up -d --build`
+- Запустите контейнеры дев среды с помощью команды `docker-compose -f docker-compose.dev.yml up -d --build`
+- Прод будет доступен по 8000 порту, дев по 8001
 - Админка будет в `http://localhost:8000/admin`
 - Swagger документация будет в `http://localhost:8000/api/schema/swagger-ui/`
