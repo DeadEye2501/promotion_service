@@ -1,0 +1,27 @@
+# pipenv
+Pipfile
+Pipfile.lock
+
+# static
+/promotion_service/static/
+
+# celery
+/promotion_service/celerybeat-shedule
+
+# redis
+*.rdb
+
+# django
+*.log
+*.pot
+*.pyc
+__pycache__
+
+# backup files
+*.bak
+
+# pycharm
+.idea
+
+# pytest
+.pytest_cache/

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: web
+    build: ./promotion_service
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py createsuperuser --username root --email user@example.com --no-input &&
+             python manage.py collectstatic --no-input &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./promotion_service/:/promotion_service/
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+
+  celery:
+    container_name: celery
+    restart: always
+    build: ./promotion_service
+    command: python -m celery -A promotion_service.celery worker -l info -B
+    volumes:
+      - ./promotion_service:/promotion_service
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - web
+
+volumes:
+  postgres_data:
+  static:
+  media:
